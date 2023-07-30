@@ -1,6 +1,3 @@
-# TODO
-# Pull programaticly the subba values
-
 # Metadata ----
 # Extracting the subba unique values
 
@@ -19,69 +16,64 @@ subba_nyis <- c("ZONA",
 
 parent <- "NYIS"
 start_time <- "2018-06-19T00"
-length = 5000
-iterations <- 20
-c <- 1
-df <- NULL
-end_time <- lubridate::floor_date(Sys.time()- lubridate::days(2), unit = "day")
+start <- as.POSIXlt("2018-06-19T00", tz = "UTC")
+end <- lubridate::floor_date(Sys.time()- lubridate::days(2), unit = "day")
+attr(end, "tzone") <- "UTC"
+offset <- 24 * 30 * 3
+api_key <- Sys.getenv("eia_key")
+api_path <- "electricity/rto/region-sub-ba-data/data/"
 
 
+df <- lapply(subba_nyis, function(i){
+
+  print(i)
+  d <- EIAapi::eia_backfill(start = start,
+                       end = end,
+                       offset = offset,
+                       api_key = api_key,
+                       api_path = api_path,
+                       facets = list(parent = "NYIS",
+                                     subba = i))
+
+  return(d)
+}) |>
+  dplyr::bind_rows()
 
 
-while(c < iterations){
+plotly::plot_ly(data = df,
+                x = ~ time,
+                y = ~ value,
+                color = ~ subba,
+                type = "scatter",
+                mode = "line")
 
-  temp <- NULL
+table(df$subba)
 
-tryCatch({
-  temp <- EIAapi::eia_get(api_key = Sys.getenv("eia_key"),
-                          api_path = "electricity/rto/region-sub-ba-data/data/",
-                          facets = list(parent = parent,
-                                        subba = subba_nyis[2]),
-                          format = "data.frame",
-                          start = start_time,
-                          length = length,
-                          offset = length * (c -1))},
+# Fixing missing values
 
-  error = function(c) message(c),
-  warning = function(c) message(c),
-  message = function(c) message(c))
-
-  if(is.null(temp)){
-    stop("Could pull the data, please check the error message...")
-  }
-
-
-  # gsub(pattern = "-", replacement = "_",x = names(temp))
-  temp <- temp |>
-    dplyr::mutate(time = lubridate::ymd_h(period, tz = "UTC")) |>
-    dplyr::select(-period) |>
-    dplyr::select(time, dplyr::everything()) |>
-    dplyr::arrange(time)
-
-
-
-  df <- dplyr::bind_rows(df, temp)
-
-  if (max(temp$time) < end_time){
-    print(max(temp$time))
-    c <- c + 1
-  } else {
-    c <- iterations
-  }
-  print(c)
-
-
+for(i in which(df$value == 0)){
+  area <- time <- value1 <- value2 <- NULL
+  area <- df$subba[i]
+  time <- df$time[i]
+  value1 <- df$value[which(df$subba == area & df$time == time - lubridate::hours(1))]
+  value2 <- df$value[which(df$subba == area & df$time == time + lubridate::hours(1))]
+  df$value[i] <- (value1 + value2) / 2
 }
 
+df |> dplyr::filter(subba == "ZONA") |>
+  plotly::plot_ly(x = ~ time,
+                  y = ~ value,
+                  type = "scatter",
+                  mode = "line")
+ny_grid_meta <- df |>
+  dplyr::select(subba, subba_name, parent, parent_name, value_units) |>
+  dplyr::distinct()
 
-head(temp)
-unique(temp$subba)
-unique(temp$parent)
-unique(temp$period)
-table(temp$subba)
+usethis::use_data(ny_grid_meta)
 
+ny_grid <- df |> dplyr::select(time, subba, value)
 
-temp |> dplyr::group_by(`subba-name`) |>
-  dplyr::summarise(total = dplyr::n(),
-                   start = min(time),
-                   end = max(time))
+write.csv(ny_grid, "./csv/ny_grid.csv", row.names = FALSE)
+
+ny_grid |> dplyr::group_by(subba) |>
+  dplyr::summarise(time_max = max(time))
