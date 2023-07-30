@@ -69,11 +69,17 @@ ny_grid_meta <- df |>
   dplyr::select(subba, subba_name, parent, parent_name, value_units) |>
   dplyr::distinct()
 
+# Create a metadata file
 usethis::use_data(ny_grid_meta)
 
+# Save data as csv file
 ny_grid <- df |> dplyr::select(time, subba, value)
-
 write.csv(ny_grid, "./csv/ny_grid.csv", row.names = FALSE)
+
+# Create a log file
+
+
+end
 
 ny_grid |> dplyr::group_by(subba) |>
   dplyr::summarise(time_max = max(time))
