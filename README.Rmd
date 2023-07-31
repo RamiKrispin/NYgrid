@@ -18,7 +18,16 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of NYgrid is to ...
+🚧 WIP 🚧
+
+The NYgrid R package provides access to a set of high-frequency (hourly) time series dataset, describing the demand generation of electricity by the New York Independent System Operator. 
+
+Data source: [EIA API](https://www.eia.gov/opendata/)
+
+The package goals:
+
+- Supporting material for the Applied Time Series Analysis and Forecasting book.
+- Example for setting live data automation with R, Github Actions, and Docker
 
 ## Installation
 
@@ -29,27 +38,21 @@ You can install the development version of NYgrid from [GitHub](https://github.c
 devtools::install_github("RamiKrispin/NYgrid")
 ```
 
-## Example
+## Data 
 
-This is a basic example which shows you how to solve a common problem:
+The electricity demand generation dataset includes eleven time series, each representing a New York Independent System Operator region. 
 
 ```{r example}
 library(NYgrid)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+TODO
+- Add data dictionary
+- Simple example
+- Data architecture
 
-```{r cars}
-summary(cars)
-```
+## Data architecture
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
 
-You can also embed plots, for example:
+<img src="man/figures/data architecture.png" width="100%" />
 
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.

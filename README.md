@@ -6,7 +6,20 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of NYgrid is to …
+🚧 WIP 🚧
+
+The NYgrid R package provides access to a set of high-frequency (hourly)
+time series dataset, describing the demand generation of electricity by
+the New York Independent System Operator.
+
+Data source: [EIA API](https://www.eia.gov/opendata/)
+
+The package goals:
+
+-   Supporting material for the Applied Time Series Analysis and
+    Forecasting book.
+-   Example for setting live data automation with R, Github Actions, and
+    Docker
 
 ## Installation
 
@@ -18,38 +31,17 @@ You can install the development version of NYgrid from
 devtools::install_github("RamiKrispin/NYgrid")
 ```
 
-## Example
+## Data
 
-This is a basic example which shows you how to solve a common problem:
+The electricity demand generation dataset includes eleven time series,
+each representing a New York Independent System Operator region.
 
 ``` r
 library(NYgrid)
-## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+TODO - Add data dictionary - Simple example - Data architecture
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+## Data architecture
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this. You could also
-use GitHub Actions to re-render `README.Rmd` every time you push. An
-example workflow can be found here:
-<https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<img src="man/figures/data architecture.png" width="100%" />
