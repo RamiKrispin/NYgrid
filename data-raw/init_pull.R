@@ -50,6 +50,7 @@ plotly::plot_ly(data = df,
 table(df$subba)
 
 # Fixing missing values
+missing_values <- length(which(df$value == 0))
 
 for(i in which(df$value == 0)){
   area <- time <- value1 <- value2 <- NULL
@@ -60,26 +61,69 @@ for(i in which(df$value == 0)){
   df$value[i] <- (value1 + value2) / 2
 }
 
+missing_values_fix <- TRUE
+missing_values_method <- "Moving average"
+
 df |> dplyr::filter(subba == "ZONA") |>
   plotly::plot_ly(x = ~ time,
                   y = ~ value,
                   type = "scatter",
                   mode = "line")
+
+# Create a metadata file
 ny_grid_meta <- df |>
   dplyr::select(subba, subba_name, parent, parent_name, value_units) |>
   dplyr::distinct()
 
-# Create a metadata file
 usethis::use_data(ny_grid_meta)
 
 # Save data as csv file
 ny_grid <- df |> dplyr::select(time, subba, value)
 write.csv(ny_grid, "./csv/ny_grid.csv", row.names = FALSE)
 
+
+ny_grid_end <- (ny_grid |> dplyr::group_by(subba) |>
+  dplyr::summarise(time_max = max(time)) |>
+  dplyr::select(time_max) |>
+  dplyr::distinct())$time_max
+
+if(length(ny_grid_end)!= 1){
+  end_time_subba <- "multiple"
+  end_time_query_match <- FALSE
+  end_time <- NA
+} else {
+  end_time_subba <- "single"
+  if(ny_grid_end != end){
+    end_time_query_match <- FALSE
+    end_time <- NA
+  } else if(ny_grid_end == end){
+    end_time_query_match <- TRUE
+    end_time <- ny_grid_end
+  }
+}
+
+
+# Check if the refresh was successful
+if(end_time_query_match && end_time_subba == "single" && missing_values_fix){
+  success <- TRUE
+} else {
+  success <- FALSE
+}
+
 # Create a log file
+nygrid_log <- data.frame(time = Sys.time(),
+                         num_observations = nrow(ny_grid),
+                         num_subba = length(unique(df$subba)),
+                         missing_values = missing_values,
+                         missing_values_fix = missing_values_fix,
+                         missing_values_method = missing_values_method,
+                         end_time_subba =  end_time_subba,
+                         end_time_query_match = end_time_query_match,
+                         end_time = end_time,
+                         type = "Backfill",
+                         success = success)
+
+saveRDS(nygrid_log, file = "./metadata/nygrid_log.RDS")
 
 
-end
 
-ny_grid |> dplyr::group_by(subba) |>
-  dplyr::summarise(time_max = max(time))
