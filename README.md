@@ -40,7 +40,11 @@ each representing a New York Independent System Operator region.
 library(NYgrid)
 ```
 
-TODO - Add data dictionary - Simple example - Data architecture
+TODO
+
+-   Add data dictionary
+-   Simple example
+-   Data architecture
 
 ## Data architecture
 
