@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 diagrams/*.drawio.bkp
+.DS_Store
