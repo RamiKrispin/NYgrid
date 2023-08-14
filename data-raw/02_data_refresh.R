@@ -26,7 +26,7 @@ if(r1 != r2){
 } else {
 
   start <- nygrid_log$end[r2] + lubridate::hours(1)
-  end <- lubridate::floor_date(Sys.time() - lubridate::hours(25), unit = "hour")
+  end <- lubridate::floor_date(Sys.time() - lubridate::hours(26), unit = "hour")
 
   attr(end, "tzone") <- "UTC"
   # Validite end > start
@@ -50,15 +50,17 @@ if(r1 != r2){
         appended_df <- rbind(main_df, df)
 
         nygrid_log_new$append[1] <- TRUE
-        log <- rbind(nygrid_log, nygrid_log_new)
+
         # Save data as csv file
         write.csv(appended_df, "./csv/ny_grid.csv", row.names = FALSE)
 
       }
     }
 
+    log_new <- rbind(nygrid_log, nygrid_log_new)
+
     #Save log
-    saveRDS(log, file = "./metadata/nygrid_log.RDS")
+    saveRDS(log_new, file = "./metadata/nygrid_log.RDS")
   }
 }
 

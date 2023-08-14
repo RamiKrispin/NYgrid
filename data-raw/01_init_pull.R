@@ -4,7 +4,7 @@ parent <- "NYIS"
 start <- as.POSIXct("2018-06-19 05:00:00", tz = "UTC")
 end <- lubridate::floor_date(Sys.time()- lubridate::days(3), unit = "day")
 attr(end, "tzone") <- "UTC"
-offset <- 24 * 30 * 3
+offset <- 5000
 api_key <- Sys.getenv("eia_key")
 api_path <- "electricity/rto/region-sub-ba-data/data/"
 # Backfill ----
@@ -52,8 +52,6 @@ if(nygrid_log$test9[1]){
   write.csv(df, "./csv/ny_grid.csv", row.names = FALSE)
   #Save log
   saveRDS(nygrid_log, file = "./metadata/nygrid_log.RDS")
-
-
 }
 
 
