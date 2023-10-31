@@ -93,7 +93,7 @@ nygrid_dqc <- function(input){
 
 
   # Test 1 - All subba available?
-  test1 <- all(obj_attr$subba %in% unique(df$subba))
+  test1 <- all(obj_attr$subba %in% unique(input$subba))
   # Test 2 - All subba distribute equally?
   test2 <- all(diff(table(input$subba)) == 0)
   # Test 3 - Any missing values?
@@ -119,7 +119,8 @@ nygrid_dqc <- function(input){
   test9 <- test1 & test2 & !test3 & !test4 & test5 & test6 & test7 & test8
 
 
-  meta_df <- data.frame(time = Sys.time(),
+  meta_df <- data.frame(index = 0,
+                        time = Sys.time(),
                         test1 = test1,
                         test2 = test2,
                         test3 = test3,
@@ -131,6 +132,8 @@ nygrid_dqc <- function(input){
                         test9 = test9,
                         start = obj_attr$start,
                         end = obj_attr$end,
+                        start_act = min(input$time),
+                        end_act = max(input$time), 
                         num_obs = nrow(input),
                         append = FALSE)
 
