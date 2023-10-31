@@ -5,7 +5,7 @@ start <- as.POSIXct("2018-06-19 05:00:00", tz = "UTC")
 end <- lubridate::floor_date(Sys.time()- lubridate::days(3), unit = "day")
 attr(end, "tzone") <- "UTC"
 offset <- 5000
-api_key <- Sys.getenv("eia_key")
+api_key <- Sys.getenv("EIA_API_KEY")
 api_path <- "electricity/rto/region-sub-ba-data/data/"
 # Backfill ----
 

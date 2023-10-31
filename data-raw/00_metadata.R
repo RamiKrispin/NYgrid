@@ -2,7 +2,7 @@
 subba <- NYgrid:::nyis_subba_codes()
 parent <- "NYIS"
 offset <- 24 * 30 * 3
-api_key <- Sys.getenv("eia_key")
+api_key <- Sys.getenv("EIA_API_KEY")
 api_path <- "electricity/rto/region-sub-ba-data/data/"
 # Create metadata ----
 
