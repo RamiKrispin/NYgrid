@@ -108,4 +108,6 @@ if (log_last$end < end_period && log_last$end_act < end_period) {
             }
         }
     }
+} else {
+    print("No new data is currently available.")
 }
